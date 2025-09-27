@@ -1,12 +1,18 @@
-
 provider "aws" {
-  region = "eu-west-1" 
+  region = "us-east-1" 
+}
+
+
+variable "public_key_path" {
+  description = "Path to the local public SSH key file for EC2 access."
+  type        = string
+  default     = "~/.ssh/id_rsa.pub" 
 }
 
 data "aws_vpc" "selected" {
   filter {
     name   = "tag:Name"
-    values = ["vpc-098aa32d4cf73acfe"]
+    values = ["my-production-vpc"] # <-- VERIFY THIS TAG/NAME
   }
 }
 
@@ -14,12 +20,12 @@ data "aws_subnet" "selected" {
   vpc_id = data.aws_vpc.selected.id
   filter {
     name   = "tag:Name"
-    values = ["subnet-0e71381a11f27c2c4"]
+    values = ["my-public-subnet-a"] # <-- VERIFY THIS TAG/NAME
   }
 }
 
 data "aws_security_group" "selected" {
-  name   = "sg-0cf62ab6398dbaba9" 
+  name   = "my-web-server-sg" # <-- VERIFY THIS NAME
   vpc_id = data.aws_vpc.selected.id
 }
 
@@ -33,8 +39,9 @@ data "aws_ami" "amazon_linux" {
 }
 
 resource "aws_key_pair" "deployer" {
-  key_name   = "Manoj-test"
- 
+  key_name   = "jenkins-tf-app-key"
+  # This now uses the variable defined above:
+  public_key = file(var.public_key_path) 
 }
 
 resource "aws_instance" "app_server" {
