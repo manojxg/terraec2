@@ -11,37 +11,29 @@ pipeline {
         
         stage('Terraform Init') {
             steps {
-               
                 sh 'terraform init'
             }
         }
         
         stage('Terraform Plan') {
             steps {
-                
                 sh 'terraform plan -out=tfplan'
             }
         }
         
         stage('Terraform Apply') {
             steps {
-              
                 sh 'terraform apply -auto-approve tfplan'
-            }
-        }
-        
-        stage('Show Output') {
-            steps {
-               
-                sh 'terraform output public_ip'
             }
         }
     }
     
-    // CORRECT: The block now contains the 'always' condition with a step
-post {
-    always {
-        sh 'terraform destroy -auto-approve'
+    post {
+        always {
+            sh 'terraform output public_ip || true' # Show IP after deploy
+        }
+        failure {
+            echo 'Deployment failed! Check Terraform logs.'
+        }
     }
-  } 
 }
