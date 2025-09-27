@@ -2,15 +2,13 @@ pipeline {
     agent any
 
     environment {
-        AWS_DEFAULT_REGION = "us-east-1"
-        // Jenkins should have AWS credentials configured in "Manage Jenkins > Credentials"
-        AWS_CREDENTIALS = credentials('aws-creds-id') 
+        AWS_PROFILE = "myprofile"   // 👈 use profile name
     }
 
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/your-repo/terraform-ec2.git'
+                git branch: 'main', url: 'https://github.com/your-org/terraform-ec2-jenkins.git'
             }
         }
 
@@ -25,8 +23,7 @@ pipeline {
         stage('Terraform Plan') {
             steps {
                 sh '''
-                export AWS_ACCESS_KEY_ID=$AWS_CREDENTIALS_USR
-                export AWS_SECRET_ACCESS_KEY=$AWS_CREDENTIALS_PSW
+                export AWS_PROFILE=${AWS_PROFILE}
                 terraform plan -out=tfplan
                 '''
             }
@@ -34,11 +31,18 @@ pipeline {
 
         stage('Terraform Apply') {
             steps {
-                input(message: 'Do you want to apply changes?')
+                input message: 'Apply Terraform changes?'
                 sh '''
-                export AWS_ACCESS_KEY_ID=$AWS_CREDENTIALS_USR
-                export AWS_SECRET_ACCESS_KEY=$AWS_CREDENTIALS_PSW
+                export AWS_PROFILE=${AWS_PROFILE}
                 terraform apply -auto-approve tfplan
+                '''
+            }
+        }
+
+        stage('Show Outputs') {
+            steps {
+                sh '''
+                terraform output
                 '''
             }
         }
