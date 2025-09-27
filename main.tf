@@ -1,12 +1,12 @@
 
 provider "aws" {
-  region = "us-east-1" 
+  region = "eu-west-1" 
 }
 
 data "aws_vpc" "selected" {
   filter {
     name   = "tag:Name"
-    values = ["my-production-vpc"]
+    values = ["vpc-098aa32d4cf73acfe"]
   }
 }
 
@@ -14,12 +14,12 @@ data "aws_subnet" "selected" {
   vpc_id = data.aws_vpc.selected.id
   filter {
     name   = "tag:Name"
-    values = ["my-public-subnet-a"]
+    values = ["subnet-0e71381a11f27c2c4"]
   }
 }
 
 data "aws_security_group" "selected" {
-  name   = "my-web-server-sg" 
+  name   = "sg-0cf62ab6398dbaba9" 
   vpc_id = data.aws_vpc.selected.id
 }
 
@@ -33,9 +33,8 @@ data "aws_ami" "amazon_linux" {
 }
 
 resource "aws_key_pair" "deployer" {
-  key_name   = "jenkins-tf-app-key"
+  key_name   = "Manoj-test"
  
-  public_key = file("~/.ssh/id_rsa.pub") 
 }
 
 resource "aws_instance" "app_server" {
