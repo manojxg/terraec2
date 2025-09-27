@@ -1,12 +1,12 @@
 
 provider "aws" {
-  region = "us-east-1" # <-- IMPORTANT: Change to your AWS region
+  region = "us-east-1" 
 }
 
 data "aws_vpc" "selected" {
   filter {
     name   = "tag:Name"
-    values = ["my-production-vpc"] # <-- CHANGE THIS to your VPC's Name tag or ID
+    values = ["my-production-vpc"]
   }
 }
 
@@ -14,12 +14,12 @@ data "aws_subnet" "selected" {
   vpc_id = data.aws_vpc.selected.id
   filter {
     name   = "tag:Name"
-    values = ["my-public-subnet-a"] # <-- CHANGE THIS to your Subnet's Name tag or ID
+    values = ["my-public-subnet-a"]
   }
 }
 
 data "aws_security_group" "selected" {
-  name   = "my-web-server-sg" # <-- CHANGE THIS to your SG's name
+  name   = "my-web-server-sg" 
   vpc_id = data.aws_vpc.selected.id
 }
 
