@@ -1,50 +1,25 @@
-pipeline {
-    agent any
+parameters {
+    string(name: 'SUBNET_ID', defaultValue: 'subnet-0e71381a11f27c2c4', description: 'AWS Subnet ID')
+    string(name: 'SECURITY_GROUP_ID', defaultValue: 'sg-0cf62ab6398dbaba9', description: 'AWS Security Group')
+}
 
-    environment {
-        AWS_PROFILE = "myprofile"   // 👈 use profile name
+stages {
+    stage('Terraform Plan') {
+        steps {
+            sh '''
+            export AWS_PROFILE=${AWS_PROFILE}
+            terraform plan -var="subnet_id=${SUBNET_ID}" -var="security_group_id=${SECURITY_GROUP_ID}" -out=tfplan
+            '''
+        }
     }
 
-    stages {
-        stage('Checkout') {
-            steps {
-                git branch: 'main', url: 'https://github.com/manojxg/terraec2.git'
-            }
-        }
-
-        stage('Terraform Init') {
-            steps {
-                sh '''
-                terraform init
-                '''
-            }
-        }
-
-        stage('Terraform Plan') {
-            steps {
-                sh '''
-                export AWS_PROFILE=${AWS_PROFILE}
-                terraform plan -out=tfplan
-                '''
-            }
-        }
-
-        stage('Terraform Apply') {
-            steps {
-                input message: 'Apply Terraform changes?'
-                sh '''
-                export AWS_PROFILE=${AWS_PROFILE}
-                terraform apply -auto-approve tfplan
-                '''
-            }
-        }
-
-        stage('Show Outputs') {
-            steps {
-                sh '''
-                terraform output
-                '''
-            }
+    stage('Terraform Apply') {
+        steps {
+            input message: 'Apply Terraform changes?'
+            sh '''
+            export AWS_PROFILE=${AWS_PROFILE}
+            terraform apply -auto-approve tfplan
+            '''
         }
     }
 }
