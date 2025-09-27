@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        AWS_PROFILE = "myprofile"   // 👈 use profile name
+        AWS_PROFILE = "AWS-SS-Dev"   // 👈 use profile name
     }
 
     stages {
