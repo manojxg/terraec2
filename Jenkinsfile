@@ -43,7 +43,8 @@ pipeline {
                 script{
                     account_id = utils.get_account_id(params['Deployment Target'])
                     // withEnv(aws_session.get(account_id, params['Change Number'])) {
-                    withEnv(aws_session.get(account_id, "arn:aws:iam::${account_id}:role/tb-ss-jenkins-deployment-common") ){
+                  //  withEnv(aws_session.get(account_id, "arn:aws:iam::${account_id}:role/tb-ss-jenkins-deployment-common") ){
+                     withEnv(aws_session.get(account_id, "arn:aws:iam::${account_id}:role/aws-service-role/sso.amazonaws.com/AWSServiceRoleForSSO") ){
                         target = params['Deployment Target']
                         amiid = params['AMI id']
                         keypair = params['Keypair']
