@@ -1,3 +1,11 @@
+pipeline {
+    agent any
+
+    environment {
+        AWS_PROFILE = "myprofile"   // 👈 use profile name
+    }
+
+
 parameters {
     string(name: 'SUBNET_ID', defaultValue: 'subnet-0e71381a11f27c2c4', description: 'AWS Subnet ID')
     string(name: 'SECURITY_GROUP_ID', defaultValue: 'sg-0cf62ab6398dbaba9', description: 'AWS Security Group')
