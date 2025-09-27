@@ -1,11 +1,12 @@
 
 provider "aws" {
-  region = "us-east-1" 
+  region = "us-east-1" # <-- IMPORTANT: Change to your AWS region
 }
 
 data "aws_vpc" "selected" {
-  tags = {
-    Name = "MyExistingVPC" # <-- CHANGE THIS to your VPC's Name tag
+  filter {
+    name   = "tag:Name"
+    values = ["my-production-vpc"] # <-- CHANGE THIS to your VPC's Name tag or ID
   }
 }
 
@@ -13,12 +14,12 @@ data "aws_subnet" "selected" {
   vpc_id = data.aws_vpc.selected.id
   filter {
     name   = "tag:Name"
-    values = ["MyExistingPublicSubnet"] # <-- CHANGE THIS to your Subnet's Name tag
+    values = ["my-public-subnet-a"] # <-- CHANGE THIS to your Subnet's Name tag or ID
   }
 }
 
 data "aws_security_group" "selected" {
-  name   = "MyExistingSecurityGroup" # <-- CHANGE THIS to your SG's name
+  name   = "my-web-server-sg" # <-- CHANGE THIS to your SG's name
   vpc_id = data.aws_vpc.selected.id
 }
 
@@ -32,8 +33,9 @@ data "aws_ami" "amazon_linux" {
 }
 
 resource "aws_key_pair" "deployer" {
-  key_name   = "jenkins-tf-key"
-  public_key = file("~/.ssh/id_rsa.pub") # Path to your public key
+  key_name   = "jenkins-tf-app-key"
+  # IMPORTANT: Change this to the path of your public SSH key on the Jenkins server/pipeline runner.
+  public_key = file("~/.ssh/id_rsa.pub") 
 }
 
 resource "aws_instance" "app_server" {
@@ -42,11 +44,12 @@ resource "aws_instance" "app_server" {
 
   subnet_id              = data.aws_subnet.selected.id
   vpc_security_group_ids = [data.aws_security_group.selected.id]
-
-  key_name      = aws_key_pair.deployer.key_name
+  
+  associate_public_ip_address = true
+  key_name                    = aws_key_pair.deployer.key_name
 
   tags = {
-    Name = "Jenkins-TF-EC2-New-Instance"
+    Name = "Jenkins-TF-EC2-New-App"
   }
 }
 
