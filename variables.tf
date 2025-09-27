@@ -15,7 +15,7 @@ variable "key_name" {
 }
 
 variable "aws_profile" {
-  default = "AWS-SS-Dev"  # 👈 AWS CLI profile name
+  default = "TB-AWS-SS-Dev"  # 👈 AWS CLI profile name
 }
 
 variable "subnet_id" {
