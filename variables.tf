@@ -17,3 +17,13 @@ variable "key_name" {
 variable "aws_profile" {
   default = "AWS-SS-Dev"  # 👈 AWS CLI profile name
 }
+
+variable "subnet_id" {
+  description = "The subnet ID where EC2 should be launched"
+  default     = "subnet-0e71381a11f27c2c4" # replace with your subnet
+}
+
+variable "security_group_id" {
+  description = "Security group for EC2"
+  default     = "sg-0cf62ab6398dbaba9" # replace with your SG
+}
