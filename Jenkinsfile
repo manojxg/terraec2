@@ -3,6 +3,7 @@ properties([
         
         choice(name: 'Deployment Target', choices: ['myprofile'], description: 'Choose deployment environment?'),
         string(name: 'AMI id', defaultValue: '', description: 'Enter the id of the AMI that you wish to start'),
+        string(name: 'Change Number', defaultValue: '', description: 'Enter a ServiceNow Change Number if appropriate'),
         string(name: 'Keypair', defaultValue: '', description: 'Enter the name of the keypair to use for the instance')
 
 
@@ -20,13 +21,13 @@ pipeline {
        }
     
 
-    stages {
+   stages {
 
         stage('Pre-Reqs') {
             steps {
                 script{
                     account_id = utils.get_account_id(params['Deployment Target'])
-                    withEnv(aws_session.get(account_id, params[''])) {
+                    withEnv(aws_session.get(account_id, params['Change Number'])) {
                         // here you are in the appropriate account
                         echo "inside withEnv"
                         venv.exec('aws configure set region eu-west-1')
@@ -42,7 +43,7 @@ pipeline {
             steps {
                 script{
                     account_id = utils.get_account_id(params['Deployment Target'])
-                    // withEnv(aws_session.get(account_id, params['Change Number'])) {
+                    withEnv(aws_session.get(account_id, params['Change Number'])) {
                   //  withEnv(aws_session.get(account_id, "arn:aws:iam::${account_id}:role/tb-ss-jenkins-deployment-common") ){
                      withEnv(aws_session.get(account_id, "arn:aws:iam::${account_id}:role/aws-service-role/sso.amazonaws.com/AWSServiceRoleForSSO") ){
                         target = params['Deployment Target']
@@ -52,7 +53,7 @@ pipeline {
                         // here you are in the appropriate account, test a basic command
                         venv.exec('aws s3 ls')
                         // do something useful
-                        venv.exec("source environment/${target}.sh && env && pwd && ls -la && chmod +x ./fun.sh")
+       //                 venv.exec("source environment/${target}.sh && env && pwd && ls -la && chmod +x ./fun.sh")
                         
                       
                     }
