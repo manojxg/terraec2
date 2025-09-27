@@ -38,12 +38,10 @@ pipeline {
         }
     }
     
-    post {
-        
-        /*
-        always {
-            sh 'terraform destroy -auto-approve'
-        }
-        */
+    // CORRECT: The block now contains the 'always' condition with a step
+post {
+    always {
+        sh 'terraform destroy -auto-approve'
     }
+  } 
 }
