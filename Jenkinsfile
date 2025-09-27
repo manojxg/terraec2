@@ -8,7 +8,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/your-org/terraform-ec2-jenkins.git'
+                git branch: 'main', url: 'https://github.com/manojxg/terraec2.git'
             }
         }
 
