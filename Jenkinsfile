@@ -36,7 +36,7 @@ pipeline {
     }
     
     post {
-        # The 'always' block ensures the output runs even if apply partially fails.
+       
         always {
             sh 'terraform output public_ip || true' 
         }
