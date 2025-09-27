@@ -1,29 +1,49 @@
 pipeline {
     agent any
-
+    
     stages {
-        stage('Checkout') {
+        stage('Checkout Code') {
             steps {
-                echo 'Checking out source code...'
+                # Ensure the SCM (e.g., Git) is configured correctly to pull the Terraform code
+                checkout scm 
             }
         }
-        stage('Build') {
+        
+        stage('Terraform Init') {
             steps {
-                echo 'Building the project...'
-                sh 'echo "Compiling source files..."'
+                # Initialize Terraform and download the AWS provider
+                sh 'terraform init'
             }
         }
-        stage('Test') {
+        
+        stage('Terraform Plan') {
             steps {
-                echo 'Running unit tests...'
-                sh 'echo "All tests passed!"'
+                # Validate syntax and create a deployment plan
+                sh 'terraform plan -out=tfplan'
             }
         }
-        stage('Deploy') {
+        
+        stage('Terraform Apply') {
             steps {
-                echo 'Deploying application...'
-                sh 'echo "Deployment successful!"'
+                # Apply the plan. Authentication uses the IAM Role attached to the Jenkins EC2 instance.
+                sh 'terraform apply -auto-approve tfplan'
             }
         }
+        
+        stage('Show Output') {
+            steps {
+                # Display the public IP of the new EC2 instance
+                sh 'terraform output public_ip'
+            }
+        }
+    }
+    
+    post {
+        # Optional Cleanup: Uncomment to destroy the EC2 instance after the pipeline finishes
+        /*
+        always {
+            sh 'terraform destroy -auto-approve'
+        }
+        */
     }
 }
