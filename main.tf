@@ -34,7 +34,7 @@ data "aws_ami" "amazon_linux" {
 
 resource "aws_key_pair" "deployer" {
   key_name   = "jenkins-tf-app-key"
-  # IMPORTANT: Change this to the path of your public SSH key on the Jenkins server/pipeline runner.
+ 
   public_key = file("~/.ssh/id_rsa.pub") 
 }
 
