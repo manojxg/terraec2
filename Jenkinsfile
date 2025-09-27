@@ -30,7 +30,7 @@ pipeline {
     
     post {
         always {
-            sh 'terraform output public_ip || true' # Show IP after deploy
+            sh 'terraform output public_ip || true' 
         }
         failure {
             echo 'Deployment failed! Check Terraform logs.'
