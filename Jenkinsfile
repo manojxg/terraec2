@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
- //       AWS_PROFILE = "myprofile"   // 👈 use profile name
+    AWS_PROFILE = "myprofile"   
     }
 
 
@@ -15,7 +15,7 @@ stages {
     stage('Terraform Plan') {
         steps {
             sh '''
-    //        export AWS_PROFILE=${AWS_PROFILE}
+           export AWS_PROFILE=${AWS_PROFILE}
             terraform plan -var="subnet_id=${SUBNET_ID}" -var="security_group_id=${SECURITY_GROUP_ID}" -out=tfplan
             '''
         }
