@@ -1,9 +1,9 @@
 variable "region" {
-  default = "us-east-1"
+  default = "eu-west-1"
 }
 
 variable "ami_id" {
-  default = "ami-0c02fb55956c7d316"
+  default = "ami-0bc691261a82b32bc"
 }
 
 variable "ROLE_ARN" {
